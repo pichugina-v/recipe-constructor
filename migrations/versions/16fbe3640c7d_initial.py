@@ -1,8 +1,8 @@
-"""init
+"""Initial
 
-Revision ID: 1430ff9db5f7
+Revision ID: 16fbe3640c7d
 Revises: 
-Create Date: 2023-06-22 14:24:27.086274
+Create Date: 2023-07-26 12:12:44.268176
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision = '1430ff9db5f7'
+revision = '16fbe3640c7d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,17 +23,20 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('text', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('ingredient',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('measure_unit', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('dishingredientamount',
     sa.Column('dish_id', sa.Integer(), nullable=False),
     sa.Column('ingredient_id', sa.Integer(), nullable=False),
+    sa.Column('amount', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['dish_id'], ['dish.id'], ),
     sa.ForeignKeyConstraint(['ingredient_id'], ['ingredient.id'], ),
     sa.PrimaryKeyConstraint('dish_id', 'ingredient_id')

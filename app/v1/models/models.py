@@ -14,6 +14,10 @@ class DishIngredientAmount(SQLModel, table=True):
         foreign_key="ingredient.id",
         primary_key=True
     )
+    amount: int = Field(
+        default=None,
+        description="Amount of ingredient in dish"
+    )
 
 class Dish(SQLModel, table=True):
     id: int =  Field(
@@ -23,14 +27,16 @@ class Dish(SQLModel, table=True):
     )
     name: str = Field(
         default=None,
-        description="Dish name"
+        description="Dish name",
+        unique=True,
     )
     text: Optional[str] = Field(
         default=None,
         description="Dish description"
     )
-    ingredients: List["Ingredient"] = Relationship(
+    ingredients:  Optional[List["Ingredient"] | None]= Relationship(
         back_populates='dishes',
+        sa_relationship_kwargs={"lazy": "selectin"},
         link_model=DishIngredientAmount
     )
 
@@ -43,14 +49,16 @@ class Ingredient(SQLModel, table=True):
     )
     name: str = Field(
         default=None,
-        description="Ingredient name"
+        description="Ingredient name",
+        unique=True
     )
     measure_unit: str = Field(
         default=None,
         description="Ingredeint measurement unit"
     )
-    dishes: List["Dish"] = Relationship(
+    dishes: Optional[List["Dish"] | None]  = Relationship(
         back_populates="ingredients",
+        sa_relationship_kwargs={"lazy": "selectin"},
         link_model=DishIngredientAmount
     )
     

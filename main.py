@@ -3,16 +3,11 @@ from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter
 
 from app.db.database import init_db
+from app.v1.graphql_api.core import Mutation, Query
 
-
-@strawberry.type
-class Query:
-    @strawberry.field
-    def hello(self) -> str:
-        return "Hellow world!"
 
 def create_app():
-    schema = strawberry.Schema(Query)
+    schema = strawberry.Schema(query=Query, mutation=Mutation)
     qraphql_app = GraphQLRouter(schema)
     app = FastAPI()
 
@@ -22,9 +17,5 @@ def create_app():
 app = create_app()
 
 @app.on_event("startup")
-def on_startup():
-    init_db()
-
-@app.get("/")
-def ping():
-    return {"ping": "pong"}
+async def on_startup():
+    await init_db()
