@@ -28,7 +28,6 @@ class CreateMutation:
         return dish
     
     async def update_dish(self, dish_data: DishUpdateInput):
-        print("111")
         async with AsyncSession(async_engine) as session:
             db_dish_by_name = await session.exec(select(Dish).where(Dish.name==dish_data.name))
             dish_by_name = db_dish_by_name.first()
@@ -36,7 +35,6 @@ class CreateMutation:
                 raise Exception("Блюдо с таким  названием уже существует")
             db_dish = await session.exec(select(Dish).where(Dish.id==dish_data.id))
             dish = db_dish.first()
-            print("22222")
             if not dish:
                 raise Exception("Блюдо с таким  id не существует")
             dish.name = dish_data.name
@@ -44,17 +42,12 @@ class CreateMutation:
             session.add(dish)
             await session.commit()
             await session.refresh(dish)
-            print("3333")
             if dish_data.ingredients:
-                print("4444")
+                await self._delete_ingredient_amount(dish.id)
                 for ingredient_data in dish_data.ingredients:
-                    print("5555")
-                    updated_ingredient = await self.update_dish_ingredient(ingredient_data.ingredient)
-                    print("666")
+                    updated_ingredient = await self.update_dish_ingredient(ingredient_data.ingredient, dish.id)
                     if ingredient_data.amount:
-                        print("777")
                         await self._update_ingredient_amount(dish.id, updated_ingredient.id, ingredient_data.amount)
-                        print("888")
         return dish
 
 
@@ -89,7 +82,7 @@ class CreateMutation:
         return ingredient
 
     
-    async def update_dish_ingredient(self, ingredient_data: IngredientInput):
+    async def update_dish_ingredient(self, ingredient_data: IngredientInput, dish_id: int):
         async with AsyncSession(async_engine) as session:
             db_ingredient = await session.exec(select(Ingredient).where(Ingredient.name==ingredient_data.name))
             ingredient = db_ingredient.first()
@@ -99,7 +92,6 @@ class CreateMutation:
                 await session.commit()
                 await session.refresh(ingredient)
                 return ingredient
-            
             return await self.create_ingredient(ingredient_data, show_error=False)
 
     
@@ -153,3 +145,5 @@ class CreateMutation:
             ingredients_amount = db_ingredients_amount.all()
             for amount in ingredients_amount:
                 await session.delete(amount)
+                await session.commit()
+
