@@ -19,6 +19,7 @@ class DishIngredientAmount(SQLModel, table=True):
         description="Amount of ingredient in dish"
     )
 
+
 class Dish(SQLModel, table=True):
     id: int =  Field(
         default=None,
