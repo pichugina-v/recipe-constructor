@@ -1,0 +1,50 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.2.0
+  hooks:
+  -   id: trailing-whitespace
+  -   id: double-quote-string-fixer
+  -   id: end-of-file-fixer
+  -   id: check-yaml
+  -   id: check-json
+  -   id: check-case-conflict
+  -   id: check-merge-conflict
+  -   id: check-added-large-files
+  -   id: check-ast
+
+- repo: https://github.com/pre-commit/mirrors-autopep8
+  rev: v2.0.1
+  hooks:
+  -   id: autopep8
+      args: [--max-line-length=120, --in-place]
+
+- repo: https://github.com/PyCQA/isort
+  rev: 5.12.0
+  hooks:
+  -   id: isort
+      args: [--profile, black, --filter-files]
+
+- repo: https://github.com/PyCQA/flake8
+  rev: 6.0.0
+  hooks:
+  - id: flake8
+    args: ["--ignore=E501,F821", "--max-line-length=120", "--extend-exclude=*/__init__.py,*migrations*,*/conftest.py*"]
+
+- repo: https://github.com/asottile/add-trailing-comma
+  rev: v2.4.0
+  hooks:
+  -    id: add-trailing-comma
+       args: [--py36-plus]
+
+- repo: https://github.com/asottile/pyupgrade
+  rev: v3.3.1
+  hooks:
+  -   id: pyupgrade
+      args: [--py310-plus]
+
+- repo: https://github.com/psf/black
+  rev: stable
+  hooks:
+  -   id: black
+      language_version: python3.10
+      args: [--skip-string-normalization]

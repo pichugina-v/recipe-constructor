@@ -1,65 +1,75 @@
-from typing import Optional, List
-
-from sqlmodel import Field, SQLModel, Relationship
+from sqlmodel import Field, Relationship, SQLModel
 
 
 class DishIngredientAmount(SQLModel, table=True):
+
+    """
+    Таблица M-T-M для связи блюда и игредиента в БД
+    с доп.полем количество
+    для хранении информации о количестве игредиента в конкретном блюде
+    """
+
     dish_id: int = Field(
         default=None,
-        foreign_key="dish.id",
-        primary_key=True
+        foreign_key='dish.id',
+        primary_key=True,
     )
     ingredient_id: int = Field(
         default=None,
-        foreign_key="ingredient.id",
-        primary_key=True
+        foreign_key='ingredient.id',
+        primary_key=True,
     )
     amount: int = Field(
         default=None,
-        description="Amount of ingredient in dish"
+        description='Количество ингредиента в блюде',
     )
 
 
 class Dish(SQLModel, table=True):
-    id: int =  Field(
+
+    """Таблица Блюда в БД"""
+
+    id: int = Field(
         default=None,
         primary_key=True,
-        description="Dish ID"
+        description='ID блюда',
     )
     name: str = Field(
         default=None,
-        description="Dish name",
+        description='Название блюда',
         unique=True,
     )
-    text: Optional[str] = Field(
+    text: str | None = Field(
         default=None,
-        description="Dish description"
+        description='Описание блюда',
     )
-    ingredients:  Optional[List["Ingredient"] | None]= Relationship(
+    ingredients: list['Ingredient'] | None | None = Relationship(
         back_populates='dishes',
-        sa_relationship_kwargs={"lazy": "selectin"},
-        link_model=DishIngredientAmount
+        sa_relationship_kwargs={'lazy': 'selectin'},
+        link_model=DishIngredientAmount,
     )
 
 
 class Ingredient(SQLModel, table=True):
-    id: int =  Field(
+
+    """Таблица Ингредиента в БД"""
+
+    id: int = Field(
         default=None,
         primary_key=True,
-        description="Ingredient ID"
+        description='ID ингредиента',
     )
     name: str = Field(
         default=None,
-        description="Ingredient name",
-        unique=True
+        description='Название ингредиента',
+        unique=True,
     )
     measure_unit: str = Field(
         default=None,
-        description="Ingredeint measurement unit"
+        description='Единицы измерения',
     )
-    dishes: Optional[List["Dish"] | None]  = Relationship(
-        back_populates="ingredients",
-        sa_relationship_kwargs={"lazy": "selectin"},
-        link_model=DishIngredientAmount
+    dishes: list['Dish'] | None | None = Relationship(
+        back_populates='ingredients',
+        sa_relationship_kwargs={'lazy': 'selectin'},
+        link_model=DishIngredientAmount,
     )
-    

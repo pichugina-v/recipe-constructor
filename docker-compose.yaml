@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  goal_app_db:
+    container_name: goal_app_db
+    image: postgres:15.1-alpine
+    volumes:
+      - ./psql:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    networks:
+      - goal_app_network
+    expose:
+      - '5432'
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  goal_app:
+    container_name: goal_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    entrypoint: >
+      sh -c "
+        alembic upgrade head &&
+        uvicorn main:app --host 0.0.0.0 --reload
+      "
+    networks:
+      - goal_app_network
+    ports:
+      - 8000:8000
+    depends_on:
+      goal_app_db:
+        condition: service_healthy
+
+networks:
+  goal_app_network:
+    name: goal_app_network

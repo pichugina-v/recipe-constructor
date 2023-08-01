@@ -1,5 +1,3 @@
-from typing import Optional, List
-
 import strawberry
 
 
@@ -19,16 +17,16 @@ class IngredientUpdateInput:
 @strawberry.input
 class DishInput:
     name: str
-    text: Optional[str]
-    ingredients: List["DishIngredientAmountInput"]
+    text: str
+    ingredients: list['DishIngredientAmountInput']
 
 
 @strawberry.input
 class DishUpdateInput:
     id: int
     name: str
-    text: Optional[str]
-    ingredients: Optional[List["DishIngredientAmountInput"]] = None
+    text: str
+    ingredients: list['DishIngredientAmountInput'] | None = None
 
 
 @strawberry.input
@@ -36,3 +34,7 @@ class DishIngredientAmountInput:
     ingredient: IngredientInput
     amount: int
 
+
+@strawberry.input
+class IngredientsInput:
+    ingredient_amount: list[DishIngredientAmountInput]
