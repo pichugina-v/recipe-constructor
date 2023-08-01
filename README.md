@@ -31,11 +31,11 @@ query {
 ```python
 query {
   dishesByIngredients(
-    ingredients: {ingredientAmount: [
-      {ingredient: {name: "Фарш домашний", measureUnit: "гр"}, amount: 50},
-      {ingredient: {name: "Сыр", measureUnit: "гр"}, amount: 150},
-      {ingredient: {name: "Хлеб", measureUnit: "шт"}, amount: 5},
-      {ingredient: {name: "Помидор", measureUnit: "шт"}, amount: 5},
+    ingredients: {ingredients: [
+      {name: "Хлеб"},
+      {name: "Фарш"},
+      {name: "Соль"},
+      {name: "Томатная паста"},
     ]})
   {
       id

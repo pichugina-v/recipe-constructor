@@ -53,8 +53,7 @@ class DishDAO:
 
         async with self.db() as session:
             ingredients_names = [
-                ingredient.ingredient.name
-                for ingredient in ingredients.ingredient_amount
+                ingredient.name for ingredient in ingredients.ingredients
             ]
             db_ingredients = await session.exec(
                 select(Ingredient).where(

@@ -8,6 +8,11 @@ class IngredientInput:
 
 
 @strawberry.input
+class IngredientNameInput:
+    name: str
+
+
+@strawberry.input
 class IngredientUpdateInput:
     id: int
     name: str
@@ -37,4 +42,4 @@ class DishIngredientAmountInput:
 
 @strawberry.input
 class IngredientsInput:
-    ingredient_amount: list[DishIngredientAmountInput]
+    ingredients: list[IngredientNameInput]
